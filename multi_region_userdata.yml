@@ -1,0 +1,18 @@
+#cloud-config
+
+coreos:
+  etcd:
+    discovery: ${token} 
+    addr: $public_ipv4:4001
+    bind-addr: 0.0.0.0:4001
+    peer-addr: $public_ipv4:7001
+    peer-bind-addr: 0.0.0.0:7001
+    peer-election-timeout: 2500
+    peer-heartbeat-interval: 500
+  fleet:
+      public-ip: $public_ipv4
+  units:
+    - name: etcd.service
+      command: start
+    - name: fleet.service
+      command: start
