@@ -14,7 +14,7 @@ If you can run `aws ec2 describe-regions --output text` and get a list of
 regions back then you are good to go.
 
 See the [AWS cli docs](https://github.com/aws/aws-cli) if you run into any 
-problems
+problems.
 
 ## Installation
 
@@ -93,7 +93,7 @@ as a starting point.
 ## Contributing
 
 1. Create an issue to discuss about your idea
-2. [Fork it] (https://github.com/bigbluedev/coreos_on_ec2/fork)
+2. [Fork it] (https://github.com/bigblue/coreos_on_ec2/fork)
 3. Create your feature branch (`git checkout -b my-new-feature`)
 4. Commit your changes (`git commit -am 'Add some feature'`)
 5. Push to the branch (`git push origin my-new-feature`)
@@ -103,4 +103,4 @@ as a starting point.
 ## License
 
 Released under the MIT License. See 
-[LICENSE](http://github.com/bigbluedev/coreos_on_ec2/blob/master/LICENSE).
+[LICENSE](http://github.com/bigblue/coreos_on_ec2/blob/master/LICENSE).
