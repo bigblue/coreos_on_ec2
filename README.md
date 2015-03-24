@@ -25,6 +25,10 @@ git clone https://github.com/bigblue/coreos_on_ec2.git
 cd coreos_on_ec2
 ```
 
+## Walkthrough
+
+See [this accompanying blog post](http://blog.bigbluedev.com/coreos/quickly-setup-a-coreos-cluster-on-ec2.html) for a background on the commands and to see the process of launching a new cluster.
+
 ## Commands
 
 ```bash
