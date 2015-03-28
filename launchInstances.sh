@@ -38,9 +38,9 @@ Options:
 "
 }
 
-ami_ids=("ami-5b911f2c" "ami-88c1f295" "ami-8097d4e8" "ami-26b5ad63" 
-          "ami-f3702bc3" "ami-ea5c46eb" "ami-70dcf622" "ami-4fd3a775" 
-          "ami-2fe95632")
+ami_ids=("ami-57950a20" "ami-0c300d11" "ami-343b195c" "ami-83d533c7" 
+          "ami-0989a439" "ami-b128dcb1" "ami-fa0b3aa8" "ami-bbb5c581" 
+          "ami-2154ec3c")
 
 # Set a trap for cleaning up in case of errors or when script exits.
 rollback() {
