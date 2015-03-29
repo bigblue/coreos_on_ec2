@@ -1,0 +1,66 @@
+#cloud-config
+
+coreos:
+  etcd:
+    discovery: ${token} 
+    addr: $public_ipv4:4001
+    bind-addr: 0.0.0.0:4001
+    peer-addr: $public_ipv4:7001
+    peer-bind-addr: 0.0.0.0:7001
+    peer-election-timeout: 2500
+    peer-heartbeat-interval: 500
+  fleet:
+      public-ip: $public_ipv4
+  units:
+    - name: etcd.service
+      command: start
+    - name: fleet.service
+      command: start
+    - name: 10-weave.network
+      runtime: false
+      content: |
+        [Match]
+        Type=bridge
+        Name=weave*
+
+        [Network]
+    - name: install-weave.service
+      command: start
+      enable: true
+      content: |
+        [Unit]
+        After=network-online.target
+        After=docker.service
+        Description=Install Weave
+        Documentation=http://zettio.github.io/weave/
+        Requires=network-online.target
+        Requires=docker.service
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStartPre=/usr/bin/wget -N -P /opt/bin \
+            https://raw.github.com/zettio/weave/master/weave 
+        ExecStartPre=/usr/bin/chmod +x /opt/bin/weave
+        ExecStartPre=/usr/bin/docker pull zettio/weave:latest
+        ExecStart=/bin/echo Weave Installed
+    - name: weave.service
+      command: start
+      enable: true
+      content: |
+        [Unit]
+        After=install-weave.service
+        Description=Weave Network
+        Documentation=http://zettio.github.io/weave/
+        Requires=install-weave.service
+
+        [Service]
+        Environment=WEAVE_PASSWORD='YOURSECUREWEAVEPASSWORD'
+        Environment=CLUSTER_SIZE=3
+        ExecStartPre=/usr/bin/wget -N -P /opt/bin \
+          https://gist.githubusercontent.com/bigblue/f472de424cc37dabcba0/raw/1907912f5e5b73573c69a07e8b5259eb71d45d8a/weave_startup.sh
+        ExecStartPre=/usr/bin/chmod +x /opt/bin/weave_startup.sh
+        ExecStartPre=/opt/bin/weave_startup.sh $CLUSTER_SIZE
+        ExecStart=/usr/bin/docker logs -f weave
+        SuccessExitStatus=2
+        ExecStop=/opt/bin/weave stop

@@ -33,6 +33,7 @@ Options:
  -u, --userdata  Path to userdata file to boot instances with
                  [default: ./single_region_userdata.yml]
  -s, --skip-aws-checks Skip checking if aws cli is installed
+ -w, --weave-rules  Include weave security group [default: false]
  -h, --help      Display this help and exit
      --version   Output version information and exit
 "
@@ -85,6 +86,16 @@ Leave blank to generate key with no password."
         for port in "${ports[@]}"; do aws --region "$regions" ec2 authorize-security-group-ingress --group-id "$coreosgroup" --protocol tcp --port "$port" --cidr 0.0.0.0/0; done
       fi
 
+      if [ $include_weave_rules ]; then
+        weavelabel="weave"
+        weavegroup=$(aws --region "$regions" ec2 describe-security-groups --output=text | grep "$weavelabel" | cut -s -f 3)
+        if [ -z "$weavegroup" ]; then
+          weavegroup=$(aws --region "$regions" ec2 create-security-group --group-name "$weavelabel" --description "Weave" --output text)
+          aws --region "$regions" ec2 authorize-security-group-ingress --group-id "$weavegroup" --protocol tcp --port "6783" --cidr 0.0.0.0/0
+          aws --region "$regions" ec2 authorize-security-group-ingress --group-id "$weavegroup" --protocol udp --port "6783" --cidr 0.0.0.0/0
+        fi
+      fi
+
       public_key=$(cat $key_path)
       keypair=$(aws --region "$regions" ec2 describe-key-pairs --output "text" | grep "$key_name")
       if [ -z "$keypair" ]; then
@@ -95,7 +106,7 @@ Leave blank to generate key with no password."
       regionIndex=$(regionIndex $regions)
       ami_id=${ami_ids[$regionIndex]}
 
-      aws --region "$regions" ec2 run-instances --image-id "$ami_id" --count "$instances" --instance-type "m1.small" --security-group-ids "$coreosgroup" --key-name "$key_name" --monitoring "Enabled=true" --user-data "$userdata"
+      aws --region "$regions" ec2 run-instances --image-id "$ami_id" --count "$instances" --instance-type "m1.small" --security-group-ids "$coreosgroup" "$weavegroup" --key-name "$key_name" --monitoring "Enabled=true" --user-data "$userdata"
 
   fi
 }
@@ -152,6 +163,7 @@ key_path="~/.ssh/CoreOSKey_rsa.pub"
 token=""
 userdata_path="./single_region_userdata.yml"
 skip_aws_checks=false
+include_weave_rules=false
 
 while [[ $1 = -?* ]]; do
   case $1 in
@@ -164,6 +176,7 @@ while [[ $1 = -?* ]]; do
     -t|--token) shift; token=$1 ;;
     -u|--userdata) shift; userdata_path=$1 ;;
     -s|--skip-aws-checks) shift; skip_aws_checks=true ;;
+    -w|--weave-rules) shift; include_weave_rules=true;;
     --endopts) shift; break ;;
   esac
   shift

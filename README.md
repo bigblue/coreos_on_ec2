@@ -51,6 +51,7 @@ Options:
  -u, --userdata  Path to userdata file to boot instances with
                  [default: ./single_region_userdata.yml]
  -s, --skip-aws-checks Skip checking if aws cli is installed
+ -w, --weave-rules  Include weave security group
  -h, --help      Display this help and exit
      --version   Output version information and exit
 ~
