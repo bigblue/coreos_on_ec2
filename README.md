@@ -73,6 +73,21 @@ Options:
 ```
 
 ```bash
+$ ./connectToInstance.sh -h
+connectToInstance.sh [OPTION]...
+
+Quickly connect to one of the instances listed by listInstances.sh
+
+Options:
+  -i, --index     Which instance in list to connect to [default: 1]
+  -k, --key       Path to private key to authenticate with [default: ~/.ssh/CoreOSKey_rsa]
+  -g, --group     Security group to filter listInstances.sh with [default: coreosgroup]
+
+  -h, --help        Display this help and exit
+      --version     Output version information and exit
+```
+
+```bash
 $ ./terminateInstances.sh -h
 terminateInstances.sh [OPTION]...
 
