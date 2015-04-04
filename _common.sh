@@ -43,17 +43,6 @@ safe_exit() {
   exit
 }
 
-function regionIndex() {
-  selectedRegion=$1
-  all_regions=('eu-west-1' 'eu-central-1' 'us-east-1' 'us-west-1' 'us-west-2' 
-               'ap-northeast-1' 'ap-southeast-1' 'ap-southeast-2' 'sa-east-1')
-  for (( i = 0; i < ${#all_regions[@]}; i++ )); do
-     if [ "${all_regions[$i]}" = "${selectedRegion}" ]; then
-         echo $i;
-     fi
-  done
-}
-
 check_aws_installed() {
   err_msg="The aws command line client is required to use these bash scripts. 
   Run 'pip install awscli'

@@ -39,10 +39,6 @@ Options:
 "
 }
 
-ami_ids=("ami-ad108ada" "ami-ce88b5d3" "ami-2c4f7944" "ami-8910f0cd" 
-          "ami-ff361fcf" "ami-74639e74" "ami-344a7966" "ami-7dd1a247" 
-          "ami-35f94328")
-
 # Set a trap for cleaning up in case of errors or when script exits.
 rollback() {
   die
@@ -103,8 +99,7 @@ Leave blank to generate key with no password."
         aws --region "$regions" ec2 import-key-pair --key-name "$key_name" --public-key-material "$public_key" --output="text"
       fi
 
-      regionIndex=$(regionIndex $regions)
-      ami_id=${ami_ids[$regionIndex]}
+      ami_id=$(curl -s "http://stable.release.core-os.net/amd64-usr/current/coreos_production_ami_pv_${regions}.txt")
 
       aws --region "$regions" ec2 run-instances --image-id "$ami_id" --count "$instances" --instance-type "m1.small" --security-group-ids "$coreosgroup" "$weavegroup" --key-name "$key_name" --monitoring "Enabled=true" --user-data "$userdata"
 
