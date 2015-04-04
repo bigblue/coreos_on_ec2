@@ -47,7 +47,7 @@ main() {
   if [ $regionLength -gt 1 ]; then
     printf "%s\n" "${regions[@]}" | xargs -n 1 -P "$regionLength" ./$0 -s "true" -g "$securitygroup" -r 
   else
-    aws --region "$regions" ec2 describe-instances --filters Name=group-name,Values=$securitygroup,Name=instance-state-name,Values=running --output text | cut -s -f 8,16 | sed '/^$/d' | sed "s/^/$regions  /"
+    aws --region "$regions" ec2 describe-instances --filters "Name=group-name,Values=${securitygroup}" "Name=instance-state-name,Values=running" --output text | cut -s -f 8,16 | sed '/^$/d' | sed "s/^/$regions  /"
   fi
 }
 
